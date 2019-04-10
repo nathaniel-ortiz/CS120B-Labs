@@ -1,3 +1,9 @@
+/*	Partner 1 Name & E-mail: Nathaniel Ortiz norti013@ucr.edu
+ *	Lab Section: 028
+ *	Assignment: Lab 2  Exercise 3
+ *	I acknowledge all content contained herein, excluding template or example
+ *	code, is my own original work.
+ */
 #include <avr/io.h>
 
 int main(void) {

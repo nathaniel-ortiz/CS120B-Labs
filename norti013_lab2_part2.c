@@ -1,23 +1,10 @@
+/*	Partner 1 Name & E-mail: Nathaniel Ortiz norti013@ucr.edu
+ *	Lab Section: 028
+ *	Assignment: Lab 2  Exercise 2
+ *	I acknowledge all content contained herein, excluding template or example
+ *	code, is my own original work.
+ */
 #include <avr/io.h>
-
-/*
-0 = 0x00
-1 = 0x01
-2 = 0x02
-3 = 0x03
-4 = 0x04
-5 = 0x05
-6 = 0x06
-7 = 0x07
-8 = 0x08
-9 = 0x09
-10 = 0x0A
-11 = 0x0B
-12 = 0x0C
-13 = 0x0D
-14 = 0x0E
-15 = 0x0F
-*/
 
 int main(void) {
 	
