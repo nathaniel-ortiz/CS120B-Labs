@@ -56,7 +56,7 @@ int main(void) {
 		}
 		
 		else if(inputA == 0x0D || inputA == 0x0E || inputA == 0x0F) {
-			outputC == 0x3F;
+			outputC = 0x3F;
 		}
 		
 		PORTC = outputC;

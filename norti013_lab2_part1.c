@@ -6,7 +6,7 @@ int main(void) {
 	DDRB = 0x00; PORTB = 0xFF;
 	DDRC = 0xFF; PORTC = 0x00;
 	
-	unsigned char inputA 0x00;
+	unsigned char inputA = 0x00;
 	unsigned char inputB = 0x00;
 	unsigned char outputC = 0x00;
 	
