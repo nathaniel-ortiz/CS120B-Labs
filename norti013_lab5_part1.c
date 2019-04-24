@@ -16,7 +16,7 @@ int main(void) {
 	
 	while(1) {
 		
-		inputA = PINA;
+		inputA = ~PINC;
 		
 		if((inputA & 0x0F) == 0x00) {
 			outputC = 0x40;
@@ -50,6 +50,6 @@ int main(void) {
 			outputC = outputC | 0x80;
 		}
 		
-		PORTC = outputC;
+		PORTA = outputC;
 	}
 }
