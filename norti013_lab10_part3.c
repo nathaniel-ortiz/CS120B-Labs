@@ -57,6 +57,44 @@ void TimerSet(unsigned long M) {
 	_avr_timer_cntcurr = _avr_timer_M;
 }
 
+#include <avr/io.h>
+void set_PWM(double frequency) {
+	static double current_frequency; // Keeps track of the currently set frequency
+	// Will only update the registers when the frequency changes, otherwise allows
+	// music to play uninterrupted.
+	if (frequency != current_frequency) {
+		if (!frequency) { TCCR3B &= 0x08; } //stops timer/counter
+		else { TCCR3B |= 0x03; } // resumes/continues timer/counter
+		
+		// prevents OCR3A from overflowing, using prescaler 64
+		// 0.954 is smallest frequency that will not result in overflow
+		if (frequency < 0.954) { OCR3A = 0xFFFF; }
+		
+		// prevents OCR3A from underflowing, using prescaler 64					// 31250 is largest frequency that will not result in underflow
+		else if (frequency > 31250) { OCR3A = 0x0000; }
+		
+		// set OCR3A based on desired frequency
+		else { OCR3A = (short)(8000000 / (128 * frequency)) - 1; }
+
+		TCNT3 = 0; // resets counter
+		current_frequency = frequency; // Updates the current frequency
+	}
+}
+
+void PWM_on() {
+	TCCR3A = (1 << COM3A0);
+	// COM3A0: Toggle PB6 on compare match between counter and OCR3A
+	TCCR3B = (1 << WGM32) | (1 << CS31) | (1 << CS30);
+	// WGM32: When counter (TCNT3) matches OCR3A, reset counter
+	// CS31 & CS30: Set a prescaler of 64
+	set_PWM(0);
+}
+
+void PWM_off() {
+	TCCR3A = 0x00;
+	TCCR3B = 0x00;
+}
+
 void threeLED(unsigned char output, unsigned char currLED) {
 	if(currLED == 0) {
 		output = output & 0x09;
@@ -95,10 +133,9 @@ int main(void) {
 	DDRB = 0xFF; PORTB = 0x00;
 	unsigned char output = 0x00;
 	unsigned char currLED = 0x00;
-	unsigned char inputA = 0x00;
 	unsigned int threeLED_time = 300;
 	unsigned int blinkLED_time = 1000;
-	unsigned int pulseSpeaker_time = 0;
+	PWM_on();
 	TimerSet(1);
 	TimerOn();
 	while (1)
@@ -131,17 +168,16 @@ int main(void) {
 			}
 			blinkLED_time = 0;
 		}
-		if(~PINA == 0x01) { 
-			if(pulseSpeaker_time >= 2) {
-				output = output ^ 0x10;
-				pulseSpeaker_time = 0;
-			}
+		if((~PINA & 0x01) == 0x01) { 
+			set_PWM(500);
+		}
+		else {
+			set_PWM(0);
 		}
 		PORTB = output;
 		while(!TimerFlag);
 		TimerFlag = 0;
 		threeLED_time++;
 		blinkLED_time++;
-		pulseSpeaker_time++;
 	}
 }
